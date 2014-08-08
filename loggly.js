@@ -1,7 +1,7 @@
 var colors = require('colors');
 var loggly = require('loggly');
 var lc = loggly.createClient({
-    token: "c0a8e9e1-2ddd-4331-a7f7-9d85fad27272",
+    token: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXX",
     subdomain: "fatihky",
     tags: ["NodeJS", "Cariye-Mobil"],
     json:true
