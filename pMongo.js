@@ -21,10 +21,10 @@ pMongo.prototype.add = function(doc)
 	}
 
 	if(this.do_not_add_if_exists && this.findOne(doc._id) !== null)
-		return false;
+		return null;
 
 	this.data_store.push(doc);
-	return true;
+	return doc;
 };
 
 pMongo.prototype.findOne = function(_id)
@@ -142,7 +142,7 @@ pMongo.prototype.update = function(conds, fields)
 
 pMongo.prototype.remove = function(conds)
 {
-	if(!conds) return null;
+	if(typeof conds == "undefined") return false;
 
 	if(typeof conds == "string")
 		return this.removeById(conds);
@@ -152,6 +152,20 @@ pMongo.prototype.remove = function(conds)
 	var results = this.find(conds);
 	for(var i in results)
 		this.removeById(results[i]._id);
+
+	return true;
+};
+
+pMongo.prototype.removeById = function(_id)
+{
+	if(typeof _id == "undefined") return false;
+
+	for(var i = 0; i < this.count(); i++)
+	{
+		var doc = this.getByIndex(i);
+		if(doc._id == _id)
+			this.data_store.splice(i, 1);
+	}
 
 	return true;
 };
