@@ -155,8 +155,19 @@ pMongo.prototype.update = function(conds, fields)
 							switch(k)
 							{
 								case "$push":
+								case "$pop":
 									if(this.data_store[i][j] instanceof Array)
-										this.data_store[i][j].push(fields[j][k]);
+									{
+										if(k == "$push")
+											this.data_store[i][j].push(fields[j][k]);
+										else if(k == "$pop")
+										{
+											console.log("pop: " + fields[j][k])
+											var index = this.data_store[i][j].indexOf(fields[j][k]);
+											if(index >= 0)
+												this.data_store[i][j].splice(index, 1);
+										}
+									}
 							}
 						}
 					} break;
@@ -167,6 +178,7 @@ pMongo.prototype.update = function(conds, fields)
 		}
 	}
 }
+
 
 pMongo.prototype.remove = function(conds)
 {
