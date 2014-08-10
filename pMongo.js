@@ -82,6 +82,18 @@ pMongo.prototype.docIsMatching = function(doc, conds, limit_, skip_)
 
 								return false;
 						} break;
+						case "$in":
+						case "$nin":
+						{
+							if(typeof doc[c] != "object")
+								return false;
+							if (!(doc[c] instanceof Array))
+								return false;
+
+							if((k == "$in" && doc[c].indexOf(cond[k]) < 0)
+						    || (k == "$nin" && doc[c].indexOf(cond[k]) >= 0))
+								return false;
+						} break;
 					}
 				}
 
@@ -134,7 +146,23 @@ pMongo.prototype.update = function(conds, fields)
 		{
 			for(var j in fields)
 			{
-				this.data_store[i][j] = fields[j];
+				switch(typeof fields[j])
+				{
+					case "object":
+					{
+						for(k in fields[j])
+						{
+							switch(k)
+							{
+								case "$push":
+									if(this.data_store[i][j] instanceof Array)
+										this.data_store[i][j].push(fields[j][k]);
+							}
+						}
+					} break;
+					default:
+						this.data_store[i][j] = fields[j];
+				}
 			}
 		}
 	}
